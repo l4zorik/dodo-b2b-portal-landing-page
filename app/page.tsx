@@ -13,7 +13,10 @@ import {
   PackageCheck,
   Search,
   ShieldCheck,
+  ShoppingCart,
   Sparkles,
+  Plus,
+  Minus,
   Star,
   Truck,
   X,
@@ -37,6 +40,15 @@ const segments = [
   { title: 'Marketing & eventy', text: 'Proměňte nápad ve výrobek. Od vzorku až po tisíce kusů.', stat: 'Vzorek zdarma', color: 'bg-[#fff1ef]' },
 ]
 
+const products = [
+  { name: 'Prémiové poštovní obálky', meta: 'Balení 500 ks · 4 varianty', price: '1 290 Kč', oldPrice: '1 690 Kč', badge: '−24 %', tone: 'from-[#c9d6ff] via-[#e1ddff] to-[#ffcae3]', tag: 'Bestseller' },
+  { name: 'Recyklované dárkové krabičky', meta: 'MOQ 50 ks · vlastní potisk', price: 'od 18 Kč / ks', oldPrice: '24 Kč / ks', badge: 'Novinka', tone: 'from-[#ffd6e7] via-[#ffe9de] to-[#fff6c9]', tag: 'Top nabídka' },
+  { name: 'Bezdrátový skener skladů', meta: 'EU sklad · doprava zdarma', price: '2 490 Kč', oldPrice: '3 190 Kč', badge: '−22 %', tone: 'from-[#bfe2ff] via-[#d6e7ff] to-[#d7cbff]', tag: 'Ověřeno' },
+  { name: 'Stojan pro výdejní místa', meta: 'Kov · 3 velikosti · od 10 ks', price: 'od 890 Kč', oldPrice: '1 120 Kč', badge: '−20 %', tone: 'from-[#d8f4eb] via-[#d9edff] to-[#ddd4ff]', tag: 'Rychlé dodání' },
+  { name: 'Personalizované samolepky', meta: 'Od 100 ks · výroba 5 dní', price: 'od 0,80 Kč / ks', oldPrice: '1,20 Kč / ks', badge: '−33 %', tone: 'from-[#ffe1cf] via-[#ffe0f1] to-[#d7d9ff]', tag: 'Pro e-shopy' },
+  { name: 'Termo tašky pro rozvoz', meta: 'Izolace 6 h · logo na přání', price: 'od 349 Kč', oldPrice: '449 Kč', badge: '−22 %', tone: 'from-[#c9eff1] via-[#d7e0ff] to-[#f0d6ff]', tag: 'Akce týdne' },
+]
+
 const plans = [
   { name: 'Start', price: '0', description: 'Pro první nákup a ověření trhu.', features: ['Procházení katalogu', 'Poptávky od 5 dodavatelů', 'Základní ochrana nákupu'], cta: 'Začít zdarma' },
   { name: 'Růst', price: '1 490', description: 'Pro e-shopy a firmy, které nakupují pravidelně.', features: ['Neomezené poptávky', 'Prioritní ověření dodavatelů', 'Osobní nákupčí v češtině', 'Výhodnější doprava'], cta: 'Vybrat Růst', featured: true },
@@ -47,6 +59,8 @@ export default function Page() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [activePlan, setActivePlan] = useState('Růst')
+  const [cartCount, setCartCount] = useState(0)
+  const [cartOpen, setCartOpen] = useState(false)
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f6f8fa] text-[#14202b]">
@@ -92,6 +106,24 @@ export default function Page() {
         <div className="mt-10 flex flex-col gap-3 rounded-2xl bg-[#132532] p-3 sm:flex-row"><div className="flex flex-1 items-center gap-3 rounded-xl bg-white px-4 py-3"><Search size={19} className="text-[#6d35d9]" /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Co dnes nakupujete? Zkuste třeba 'papírové krabičky'" className="w-full bg-transparent text-sm outline-none placeholder:text-[#9aa6ad]" /></div><button className="rounded-xl bg-[#6d35d9] px-6 py-3 font-bold text-white hover:bg-[#d93127]">Hledat dodavatele</button></div>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">{categories.map((category) => <a href="#kontakt" key={category.name} className={`${category.tone} group rounded-2xl p-5 transition hover:-translate-y-1 hover:shadow-lg`}><span className="flex size-10 items-center justify-center rounded-xl bg-white/75 text-xl font-bold">{category.icon}</span><p className="mt-9 text-sm font-black">{category.name}</p><p className="mt-1 text-[11px] font-medium leading-4 text-[#6c7a83]">{category.count}</p><ChevronRight size={16} className="mt-4 text-[#6d35d9] transition group-hover:translate-x-1" /></a>)}</div>
       </section>
+
+      <section id="nabidky" className="bg-white px-5 py-20 lg:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+            <div><p className="mb-3 text-xs font-black uppercase tracking-[.2em] text-[#e83d92]">Dnešní výběr pro váš byznys</p><h2 className="text-4xl font-black tracking-[-.05em] lg:text-6xl">Nabídky, které dávají<br /><span className="text-[#6d35d9]">smysl už na první pohled.</span></h2></div>
+            <div className="flex items-center gap-2 rounded-full border border-[#e7dff8] bg-[#faf8ff] px-4 py-2 text-sm font-bold text-[#6d35d9]"><BadgeCheck size={16} /> Ceny pro firmy · bez skrytých poplatků</div>
+          </div>
+          <div className="mt-10 grid gap-8 lg:grid-cols-[220px_1fr]">
+            <aside className="hidden rounded-2xl border border-[#e6e8ef] bg-[#fbfcff] p-5 lg:block"><p className="text-sm font-black">Filtrovat nabídky</p><div className="mt-6 flex flex-col gap-5 text-sm text-[#5d6974]"><label className="flex items-center gap-3"><input type="checkbox" className="accent-[#6d35d9]" defaultChecked /> Ověřený dodavatel</label><label className="flex items-center gap-3"><input type="checkbox" className="accent-[#6d35d9]" /> Doprava zdarma</label><label className="flex items-center gap-3"><input type="checkbox" className="accent-[#6d35d9]" /> EU sklad</label><div className="border-t border-[#e6e8ef] pt-5"><p className="mb-3 font-bold text-[#14202b]">Kategorie</p><p className="py-1">Obaly & branding</p><p className="py-1">Sklad & logistika</p><p className="py-1">Pro e-shopy</p><p className="py-1">Gastro & retail</p></div></div></aside>
+            <div>
+              <div className="mb-5 flex items-center justify-between"><p className="text-sm font-bold text-[#5d6974]">Nejlepší nabídky <span className="text-[#9ba5ae]">· 1 248 výsledků</span></p><button className="rounded-full border border-[#dfe3ea] px-4 py-2 text-xs font-bold">Řazení: doporučené <ChevronDown className="ml-1 inline" size={14} /></button></div>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{products.map((product) => <article key={product.name} className="group overflow-hidden rounded-2xl border border-[#e6e8ef] bg-white transition hover:-translate-y-1 hover:border-[#c9b5f3] hover:shadow-[0_18px_40px_rgba(109,53,217,.12)]"><div className={`relative flex h-40 items-end bg-gradient-to-br ${product.tone} p-4`}><span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-black text-[#e83d92]">{product.badge}</span><span className="absolute right-3 top-3 rounded-full bg-[#14202b]/85 px-2.5 py-1 text-[10px] font-bold text-white">{product.tag}</span><div className="h-16 w-24 rotate-[-6deg] rounded-xl border-4 border-white/80 bg-white/50 shadow-lg" /><div className="ml-[-5px] h-20 w-32 rotate-[5deg] rounded-xl border-4 border-white/80 bg-white/70 shadow-lg" /></div><div className="p-4"><div className="flex items-start justify-between gap-3"><div><h3 className="text-base font-black leading-5">{product.name}</h3><p className="mt-2 text-xs text-[#7c8791]">{product.meta}</p></div><div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#f2edff] text-[#6d35d9]"><BadgeCheck size={16} /></div></div><div className="mt-5 flex items-end justify-between"><div><p className="text-lg font-black text-[#6d35d9]">{product.price}</p><p className="text-xs text-[#9ba5ae] line-through">{product.oldPrice}</p></div><button onClick={() => { setCartCount((count) => count + 1); setCartOpen(true) }} className="flex items-center gap-1 rounded-full bg-[#6d35d9] px-3 py-2 text-xs font-black text-white transition hover:bg-[#e83d92]" aria-label={`Přidat ${product.name} do košíku`}><Plus size={14} /> Přidat</button></div></div></article>)}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {cartOpen && <div className="fixed bottom-5 right-5 z-20 w-[min(380px,calc(100vw-2rem))] rounded-3xl border border-[#eadffb] bg-white p-5 shadow-[0_20px_70px_rgba(20,32,43,.25)]"><div className="flex items-start justify-between"><div><p className="text-xs font-black uppercase tracking-[.18em] text-[#e83d92]">Košík · {cartCount} položek</p><h3 className="mt-1 text-xl font-black">Dokončete nákup chytřeji</h3></div><button onClick={() => setCartOpen(false)} className="rounded-full p-2 text-[#7c8791] hover:bg-[#f5f1ff]" aria-label="Zavřít košík"><X size={18} /></button></div><div className="mt-5 rounded-2xl bg-[#f6f1ff] p-4"><p className="text-sm font-black">Přidejte k objednávce a ušetřete</p><p className="mt-1 text-xs leading-5 text-[#6c7480]">Doprava zdarma od 2 500 Kč. K objednávce doporučujeme obaly nebo samolepky pro lepší marži.</p><div className="mt-4 flex items-center justify-between rounded-xl bg-white p-3"><div><p className="text-sm font-bold">Vzorkovací balíček obalů</p><p className="text-xs text-[#e83d92]">Jen 249 Kč místo 399 Kč</p></div><button onClick={() => setCartCount((count) => count + 1)} className="rounded-full bg-[#e83d92] p-2 text-white" aria-label="Přidat vzorkovací balíček"><Plus size={16} /></button></div></div><button className="mt-4 w-full rounded-xl bg-[#14202b] px-5 py-3.5 text-sm font-black text-white hover:bg-[#6d35d9]">Pokračovat k objednávce <ArrowRight className="ml-1 inline" size={15} /></button></div>}
 
       <section id="jak-to-funguje" className="bg-[#132532] px-5 py-20 text-white lg:px-8 lg:py-28"><div className="mx-auto max-w-7xl"><div className="grid gap-14 lg:grid-cols-[.85fr_1.15fr]"><div><p className="mb-3 text-xs font-black uppercase tracking-[.2em] text-[#ff6aa8]">Méně řešení. Více obchodu.</p><h2 className="text-4xl font-black tracking-[-.05em] lg:text-6xl">Dodavatelský portál, který chápe český byznys.</h2><p className="mt-6 max-w-md leading-7 text-white/65">Spojili jsme rychlost velkého marketplace, kontrolu osobního nákupčího a férové podmínky pro firmy všech velikostí.</p><a href="#kontakt" className="mt-8 inline-flex items-center gap-2 font-bold text-[#ff6aa8]">Poznat DodoSupply <ArrowRight size={17} /></a></div><div className="grid gap-3 sm:grid-cols-2">{['Najděte správný produkt', 'Porovnejte nabídky', 'Ověřte kvalitu', 'Objednejte bezpečně'].map((item, i) => <div key={item} className="rounded-2xl border border-white/10 bg-white/[.06] p-6"><div className="mb-10 flex items-center justify-between"><span className="text-3xl font-black text-[#ff6aa8]">0{i + 1}</span><ArrowRight size={18} className="text-white/40" /></div><h3 className="text-lg font-black">{item}</h3><p className="mt-2 text-sm leading-6 text-white/55">{['Zadejte poptávku nebo procházejte katalog od ověřených partnerů.', 'Vidíte cenu za kus, MOQ, dopravu i reálný termín dodání.', 'Vzorky, fotografie, certifikace a kontrola před odesláním.', 'Platba s ochranou a podpora v češtině od prvního dotazu.'][i]}</p></div>)}</div></div></div></section>
 
